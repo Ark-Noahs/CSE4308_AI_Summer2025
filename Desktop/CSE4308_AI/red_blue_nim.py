@@ -140,63 +140,75 @@ def minmax(red, blue, is_maximizing, alpha, beta, version, depth=None, current_d
                 break
         return (min_eval, best_move)            
 
-def endGame(red, blue, version, current_player ):
-    #End Game...........
-    print("FIN RESULTS OF GAME..................")
-    print(f"DEBUG: remaining red marbles: {red}")
-    print(f"DEBUG: remaining blue marble: {blue}")
-
-    score = (2*red) + (3*blue)  #get us the final tally 
-
-    #determine winner based off of game..........
-    if version == "standard":
-        if current_player == "human":
-            not_the_LOZER = "computer"
-        else:
-            not_the_LOZER = "human"
-        
-        print(f"Winner: {not_the_LOZER} with {score} points!!!!!")
-
-    else:     #misere calls for winner to be the following payer
-        not_the_LOZER = current_player 
-        print(f"Winner: {not_the_LOZER} with {score} points!!!!! ")
-
-#funct that handles humans turn 
+#funct to handle the hooman turn.....
 def hand_of_hooman(red, blue):
     while True:
-        pile = input("Which marble pile do you want to remove from?(R/B)")
-        if (pile != 'R' and pile != 'B'):
-            print("ERROR: invalid input")
-            continue 
+        #get pile input
+        pile = input("Which pile do you want to take from? (R/B): ").strip().upper()
 
-        if pile == 'R' and red == 0:
-            print("no more red marbles in this pile")
-        
-        if pile == 'B' and blue == 0:
-            print("no more blue marbles in this pile")
-            continue 
-            
+        if pile not in ['R', 'B']:   #use list, same as pile !- 'R' and pile != 'B' 
+            print("ERROR: enter valid input (R/B)")
+            continue
+
+        #verifies that the pile selected has something to rm 
+        if pile == 'R':    #nest the if's bc got error w/ placement of 'max_remove' 
+            if red == 0:
+                print("ERROR: No more red marbles in the pile")
+                continue
+            max_remove = red
+        else:                   # pile == 'B'
+            if blue == 0:
+                print("ERROR: No more blue marbles in the pile")
+                continue
+            max_remove = blue
+
+        #select the num of marbles to remove 1 or 2
         try:
-            count = int(input("How many marbles do you want to take out?(1 or 2)").strip())
-            
-            if pile == 'R':
-                max_removal = red
-            else:
-                max_removal = blue 
+            count = int(input("enter the num of mrbles you want to remove(1 or 2): ").strip())
         except ValueError:
-            print("ERROR: either enter 1 or 2")
-            continue 
-        
-        #update values.........
+            print("ERROR:enter a valid number (1 or 2)")
+            continue
+
+        #  verify that within range and marbles are removable.....
+        if count not in [1, 2] or count > max_remove:
+            print(f"ERROR:You can only take 1 or 2 marbles, and no more than {max_remove} from the {pile} pile.")
+            continue
+
+        #update marble counts.....
         if pile == 'R':
             red = red - count 
         else:
             blue = blue - count
 
-        return red, blue 
+        return red, blue
+
+#funct to handle the final results
+def endGame(red, blue, version ,current_player):
+    print("\n!!!!!!!!!!!!!!! GAME OVER !!!!!!!!!!!!!!!!!")
+    print(f"remaining marbles:\nRed:{red}\nBlue:{blue}")
+
+    #red gets 2 pts every marble and blue gets 3 per 
+    score = (2 * red) + (3 * blue)
+
+    if version == "standard":               #standard version results
+        #player w last move before end game wins in standard 
+
+        if current_player == "human":
+            not_LOZER = "computer"
+        else:
+            not_LOZER = "human"
+        print(f"Winner: {not_LOZER}\nThe Grand Master wins with a lump sum of {score} points!!!")
+        
+    else:                                   #Misere Version results 
+        
+        #player who goes next at end game wins 
+        not_LOZER = current_player 
+        print(f"Winner: {not_LOZER}\nThe Grand Master wins with a lump sum of {score} points!!")
 
 
-#funct to handle depth.......................................
+
+
+#funct to handle depth EXTRA CREDIT......................................
 def handle_depth(args):
 
     try:
@@ -268,11 +280,13 @@ if __name__ == "__main__":
 
 
     #GAME FUNCTIONALLITY STARTS HERE....
+    print("***********GAME STARTS************")
+
     while red > 0 and blue > 0:
-        print("!!!! ----->GAME BEGINS<----- !!!!")
+        print("\n  ----->CURRENT MARBLES<----- ")
         print(f"red marbles: {red}")
         print(f"Blue marbles: {blue}")
-        print(f"Who has the current move: {current_player}")
+        print(f"Who had the current move: {current_player}")
 
         #hooman turn............
         if current_player == "human":
