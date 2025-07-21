@@ -24,7 +24,7 @@ Rules:
 
 *   -On user turn: enter input 
     -on Computer turn must use MinMax algorithm w Apha-Beta Pruning
-            -->NOTE: i got the algorithm code from GeeksforGeeks.org 
+            -->NOTE: i got the algorithm code from GeeksforGeeks.org <----!
                      HERE IS DIRECT LINK: https://www.geeksforgeeks.org/dsa/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/
 
 
@@ -34,12 +34,12 @@ Rules:
 
 import sys #help us use command line args 
 
-#minmax function w/ alpha beta pruning...........................................
+#minmax function w/ alpha beta pruning from GeeksforGeeks.org link is at top of file ^ .......
 def minmax(red, blue, is_maximizing, alpha, beta, version, depth=None, current_depth=0):
     
     #The game is over when either pile is empty.....
     if red == 0 or blue == 0:
-        score = (2 * red) + (3 * blue)
+        score = (2 * red) + (3 * blue) 
 
         if version == "misere":
             result = score      #positive score --> WINNER
@@ -140,8 +140,60 @@ def minmax(red, blue, is_maximizing, alpha, beta, version, depth=None, current_d
                 break
         return (min_eval, best_move)            
 
+def endGame(red, blue, version, current_player ):
+    #End Game...........
+    print("FIN RESULTS OF GAME..................")
+    print(f"DEBUG: remaining red marbles: {red}")
+    print(f"DEBUG: remaining blue marble: {blue}")
 
+    score = (2*red) + (3*blue)  #get us the final tally 
 
+    #determine winner based off of game..........
+    if version == "standard":
+        if current_player == "human":
+            not_the_LOZER = "computer"
+        else:
+            not_the_LOZER = "human"
+        
+        print(f"Winner: {not_the_LOZER} with {score} points!!!!!")
+
+    else:     #misere calls for winner to be the following payer
+        not_the_LOZER = current_player 
+        print(f"Winner: {not_the_LOZER} with {score} points!!!!! ")
+
+#funct that handles humans turn 
+def hand_of_hooman(red, blue):
+    while True:
+        pile = input("Which marble pile do you want to remove from?(R/B)")
+        if (pile != 'R' and pile != 'B'):
+            print("ERROR: invalid input")
+            continue 
+
+        if pile == 'R' and red == 0:
+            print("no more red marbles in this pile")
+        
+        if pile == 'B' and blue == 0:
+            print("no more blue marbles in this pile")
+            continue 
+            
+        try:
+            count = int(input("How many marbles do you want to take out?(1 or 2)").strip())
+            
+            if pile == 'R':
+                max_removal = red
+            else:
+                max_removal = blue 
+        except ValueError:
+            print("ERROR: either enter 1 or 2")
+            continue 
+        
+        #update values.........
+        if pile == 'R':
+            red = red - count 
+        else:
+            blue = blue - count
+
+        return red, blue 
 
 
 #funct to handle depth.......................................
@@ -161,7 +213,7 @@ def parse_the_args():
 
     #need to know num of red and blue in order to run program everything else has a default ....
     if len(args) < 2:
-        print("ERROR: missing arguments, currently < 2 args")
+        print("ERROR: missing arguments, currently < 2 args IF statement in 'parse_the_args' function")
         sys.exit(1)
 
     try:
@@ -194,7 +246,7 @@ def parse_the_args():
                 print(f"ERROR: issue in while loop of 'parse_the_args' ")
                 sys.exit(1)
         else:
-            print("ERROR: issue with {args[i]}")
+            print("ERROR: issue with {args[i]} in 'parse_the_args' ")
         i = i + 1   #increment and look at next value 
     
     return num_red, num_blue, version, first_player, depth 
@@ -212,4 +264,41 @@ if __name__ == "__main__":
     print(f"first turn goes to: {first_player}")
     print(f"depth limit: {depth} NOTE: this is part of extra credit if attempting it")
 
-    
+    current_player = first_player    #player one is set to whoever gets first turn in arg^
+
+
+    #GAME FUNCTIONALLITY STARTS HERE....
+    while red > 0 and blue > 0:
+        print("!!!! ----->GAME BEGINS<----- !!!!")
+        print(f"red marbles: {red}")
+        print(f"Blue marbles: {blue}")
+        print(f"Who has the current move: {current_player}")
+
+        #hooman turn............
+        if current_player == "human":
+            red,blue = hand_of_hooman(red,blue) 
+        
+        #Computers move.....
+        else:      
+            _, move = minmax(red, blue, True, float('-inf'), float('inf'), version, depth) 
+            pile, count = move  
+            print(f"The computers decision: Takes {count} marbles from {pile} pile")
+
+
+            if pile == 'R':
+                red = red - count 
+            else: 
+                blue = blue - count 
+        
+        if current_player == "computer":    #swapping players turn 
+            current_player = "human"
+        else:
+            current_player = "computer"
+
+
+    #funct to show results and determine winner based off of the versiom played...
+    endGame(red, blue, version, current_player)
+         
+
+
+
