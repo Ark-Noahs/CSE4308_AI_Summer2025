@@ -31,7 +31,18 @@ Rules:
 '''
 
 
+'''     NOTE: ADD THIS TO A .txt FILE EXPLAINING THE DEPTH FUNCT
+In my implementation of depth-limited Minimax with Alpha-Beta pruning, when the depth limit is reached before the game ends, I apply a static evaluation function to estimate the value of the current state.
 
+My function is based on the total score remaining on the board, calculated as:
+    score = 2 * (red marbles) + 3 * (blue marbles)
+
+In the **standard version**, this score is negated because the player wants to minimize remaining marbles (i.e., get to an end game). 
+In the **misère version**, the score is left positive because the player wants to avoid reaching an end game where they lose.
+
+This evaluation mimics the game’s point system and gives the algorithm useful guidance even when the full tree cannot be explored.
+
+'''
 
 
 
@@ -54,8 +65,14 @@ def minmax(red, blue, is_maximizing, alpha, beta, version, depth=None, current_d
         return (result, None)
     
     if depth is not None:            #verifies depth limit
-        if current_depth == depth:   #if depth limit is reached return score
-            return (0, None)
+        if current_depth == depth:   #
+            score = (2*red ) + (3*blue)
+
+            if version == "misere":
+                result = score      #in misere a higher score will be better for player\
+            else:
+                result = -score     #a lower score is best for the standard game since gets player closer to ending themgame
+            return (result, None)
     
     #gets us list of moves from current........
     move = []
@@ -145,7 +162,8 @@ def minmax(red, blue, is_maximizing, alpha, beta, version, depth=None, current_d
                 break
         return (min_eval, best_move)            
 
-#funct to handle the hooman turn.....
+
+#funct to handle the hooman turn.......................
 def hand_of_hooman(red, blue):
     while True:
         #get pile input
@@ -187,6 +205,7 @@ def hand_of_hooman(red, blue):
 
         return red, blue
 
+
 #funct to handle the final results
 def endGame(red, blue, version ,current_player):
     print("\n!!!!!!!!!!!!!!! GAME OVER !!!!!!!!!!!!!!!!!")
@@ -209,8 +228,6 @@ def endGame(red, blue, version ,current_player):
         #player who goes next at end game wins 
         not_LOZER = current_player 
         print(f"Winner: {not_LOZER}\nThe Grand Master wins with a lump sum of {score} points!!")
-
-
 
 
 #funct to handle depth EXTRA CREDIT......................................
@@ -268,7 +285,7 @@ def parse_the_args():
     
     return num_red, num_blue, version, first_player, depth 
 
-    
+#funct to output the passed args.....................................    
 def start_debug(red, blue, version, first_player, depth):
     print("The Game has begun, here are the following vars from your input")    #debug 
     print(f"red marbles: {red}")
