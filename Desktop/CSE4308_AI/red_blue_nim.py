@@ -1,6 +1,6 @@
 # noe chairez 
 # 1002018540
-# CSE4308_002 --> Summer 2025 Course --> due on the 30th 
+# CSE4308_002 --> Summer 2025 Course --> due on july 30th 
 
 '''
 Program has use play against computer where each take a turm removing marble. Has two versions (standard game and mis�re)
@@ -29,6 +29,11 @@ Rules:
 
 
 '''
+
+
+
+
+
 
 
 
@@ -236,7 +241,7 @@ def parse_the_args():
         print("ERROR: issues with setting red or blue w/ vars in 'parse_the_args()' funct")
         sys.exit(1)
 
-    #below are defaults.....
+    #below are the defaults..........
     version      = "standard"
     first_player = "computer"
     depth        = None        #OPTIONAL FOR EXTRA CREDIT
@@ -263,19 +268,24 @@ def parse_the_args():
     
     return num_red, num_blue, version, first_player, depth 
 
+    
+def start_debug(red, blue, version, first_player, depth):
+    print("The Game has begun, here are the following vars from your input")    #debug 
+    print(f"red marbles: {red}")
+    print(f"blue marbles: {blue}")
+    print(f"version being played: {version}")
+    print(f"first turn goes to: {first_player}")
+    print(f"depth limit: {depth} NOTE: this is part of extra credit if attempting it\n")
+
 
 if __name__ == "__main__":
 
     #passing command line to be processed into individual vars....
     red,blue,version,first_player,depth = parse_the_args() #funct go on right side in python
 
-    print("DEBUG below remove when done.............")
-    print(f"red marbles: {red}")
-    print(f"blue marbles: {blue}")
-    print(f"version being played: {version}")
-    print(f"first turn goes to: {first_player}")
-    print(f"depth limit: {depth} NOTE: this is part of extra credit if attempting it")
-
+    #funct to verify that args are properly put into their vars 
+    start_debug(red, blue, version, first_player, depth )
+    
     current_player = first_player    #player one is set to whoever gets first turn in arg^
 
 
@@ -286,15 +296,15 @@ if __name__ == "__main__":
         print("\n  ----->CURRENT MARBLES<----- ")
         print(f"red marbles: {red}")
         print(f"Blue marbles: {blue}")
-        print(f"Who had the current move: {current_player}")
+        print(f"It is your move: {current_player}")
 
         #hooman turn............
         if current_player == "human":
-            red,blue = hand_of_hooman(red,blue) 
+            red,blue = hand_of_hooman(red,blue) #call hooman function to handle user input
         
         #Computers move.....
         else:      
-            _, move = minmax(red, blue, True, float('-inf'), float('inf'), version, depth) 
+            _, move = minmax(red, blue, True, float('-inf'), float('inf'), version, depth) #_ is seen as throw away var and being ignored  
             pile, count = move  
             print(f"The computers decision: Takes {count} marbles from {pile} pile")
 
