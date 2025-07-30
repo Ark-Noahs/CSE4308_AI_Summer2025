@@ -1,0 +1,12 @@
+noe chairez
+1002018540
+
+
+for the extra credit, static evaluation is funct is called to get the value of current if the depth limit 
+                      is reached prior to the code/game ending.
+
+Tne funct uses the score value, in normal version of game it is better to have a lower score so value of score 
+                                is set to negative which would push for less marbles. (motive is to lose w low amount of points)
+                                
+                                in miserie version of game it is opposite, better to finish with more points. 
+                                so it is better to make actions that leave more marbles on the table. 
